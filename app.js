@@ -13,6 +13,17 @@ nunjucks.configure('views', { noCache: true });
 app.use(logger('tiny'));
 app.use(express.static('public'));
 
-const server = app.listen(3000, function() {
-  console.log('Server has started!');
-});
+db.User.sync().then(function(){})
+  .then(db.Page.sync())
+  .then(function () {
+      app.listen(3000, function() {
+      console.log('Server has started!');
+    });
+  })
+  .catch(function (err) {
+    console.error(err)
+  });
+
+
+
+
