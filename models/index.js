@@ -1,4 +1,5 @@
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
+const marked = require('marked');
 
 //'wikistack', 'wikistack'
 var db = new Sequelize('wikistack', 'wikistack', 'wikistack', {
@@ -37,11 +38,15 @@ var Page = db.define('page', {
         type: Sequelize.ENUM('open', 'close'),
         allowNull: false,
         defaultValue: 'open'
-    },
+    }
 }, {
     getterMethods: {
         getRoute: function() {
             return '/wiki/' + this.urlTitle;
+        },
+        getRenderedContent: function(){
+            console.log(this.content);
+            return marked(this.content)
         }
     }
 });

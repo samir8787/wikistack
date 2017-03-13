@@ -6,11 +6,14 @@ const db = require('./models');
 const routes = require('./routes/wiki.js');
 const userRoutes = require('./routes/users.js');
 
+
 const app = express();
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
 
-nunjucks.configure('views', { noCache: true });
+ let env = nunjucks.configure('views', { noCache: true });
+ let AutoEscapeExtension = require('nunjucks-autoescape')(nunjucks);
+ env.addExtension('AutoEscapeExtension', new AutoEscapeExtension(env));
 
 // logging middleware
 app.use(logger('tiny'));
