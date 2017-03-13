@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
-//
-//
-var db = new Sequelize('wikistack', undefined, undefined, {
+
+
+var db = new Sequelize('wikistack', 'wikistack', 'wikistack', {
     host: 'localhost',
     dialect: 'postgres',
     logging: false

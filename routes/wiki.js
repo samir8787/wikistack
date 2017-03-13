@@ -9,33 +9,56 @@ router.get('/', function(request, response, next) {
     response.redirect('/')
 });
 
-        //urlTitle: request.body.title.replace(/[^\da-z\s]/ig, '').replace(/\s/g, '_'),
-
 router.post('/', function(request, response, next) {
-    console.log(request.body);
     let newPage = Page.build({
         title: request.body.title,
         content: request.body.content,
         status: request.body.status,
     });
 
-    newPage.save().then(function() {
-        response.redirect('/')
+    newPage.save().then(function(page) {
+        response.redirect(page.getRoute);
     }).catch(function(err) {
-        console.error(err);
-        response.status(500).render('error', {
-            message: err.errors[0].message,
-            error: {
-                status: 500,
-                stack: err.stack
-            }
-        });
+      redirectToError(err, response)
     });
 });
 
 router.get('/add', function(request, response, next) {
     response.render('addpage');
 });
+
+router.get('/:urlTitle', function (request, response, next) {
+    let urlTitle = request.params.urlTitle;
+    Page.findOne({
+      where: {
+        urlTitle: urlTitle
+      }
+    }).then(function (foundPage) {
+      console.log(foundPage);
+      let locals = {
+        title: foundPage.title,
+        urlTitle: foundPage.urlTitle,
+        content: foundPage.content,
+        authorName: 'Samir'
+      };
+      response.render('wikipage', locals)
+    }).catch(function (err) {
+      redirectToError(err, response)
+    })
+
+
+});
+
+let redirectToError = function (err, response) {
+  console.error(err);
+  response.status(500).render('error', {
+    message: err.errors[0].message,
+    error: {
+      status: 500,
+      stack: err.stack
+    }
+  });
+};
 
 
 module.exports = router;
