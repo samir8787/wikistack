@@ -42,24 +42,15 @@ router.get('/add', function(request, response, next) {
 
 router.get('/:urlTitle', function (request, response, next) {
     let urlTitle = request.params.urlTitle;
-    var page;
     Page.findOne({
       where: {
         urlTitle: urlTitle
-      }
-    }).then(function (p) {
-      page = p;
-      return page.getAuthor();
-    }).then(function(author) {
-      // console.log(data);
-      // var user = author;
-      // let locals = {
-      //   title: page.title,
-      //   urlTitle: page.urlTitle,
-      //   content: page.content,
-      //   authorName: user.name
-      // };
-      response.render('wikipage', { page: page, author: author });
+      },
+      include: [
+        {model: User, as: 'author'}
+      ]
+    }).then(function (page) {
+      response.render('wikipage', { page: page});
     }).catch(function (err) {
       redirectToError(err, response);
     })
