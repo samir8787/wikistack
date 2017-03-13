@@ -13,7 +13,7 @@ nunjucks.configure('views', { noCache: true });
 app.use(logger('tiny'));
 app.use(express.static('public'));
 
-db.User.sync()
+db.User.sync().then(function(){})
   .then(db.Page.sync())
   .then(function () {
       app.listen(3000, function() {
@@ -23,7 +23,3 @@ db.User.sync()
   .catch(function (err) {
     console.error(err)
   });
-
-
-
-
