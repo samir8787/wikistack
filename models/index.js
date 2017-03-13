@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 //
-// undefined, undefined,
-var db = new Sequelize('wikistack','wikistack', 'wikistack', {
+//
+var db = new Sequelize('wikistack', undefined, undefined, {
     host: 'localhost',
     dialect: 'postgres',
     logging: false
@@ -44,7 +44,10 @@ var Page = db.define('page', {
             return '/wiki/' + this.urlTitle;
         }
     }
+});
 
+Page.hook('beforeValidate', function(page, options) {
+    page.urlTitle = page.title.replace(/[^\da-z\s]/ig, '').replace(/\s/g, '_').replace(/__+/g, '_');
 });
 
 module.exports = {

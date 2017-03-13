@@ -5,29 +5,36 @@ const User = models.User;
 
 const router = express.Router();
 
-router.get('/', function (request, response, next) {
-  response.redirect('/')
-});
-
-router.post('/', function (request, response, next) {
-  console.log(request.body);
-  let newPage = Page.build({
-    title: request.body.title,
-    urlTitle: request.body.title.replace(' ', '_'),
-    content: request.body.content,
-    status: request.body.status,
-  });
-
-  newPage.save().then(function () {
+router.get('/', function(request, response, next) {
     response.redirect('/')
-  }).catch(function (err) {
-    console.error(err);
-     response.sendStatus(500);
-  });
 });
 
-router.get('/add', function (request, response, next) {
-  response.render('addpage');
+        //urlTitle: request.body.title.replace(/[^\da-z\s]/ig, '').replace(/\s/g, '_'),
+
+router.post('/', function(request, response, next) {
+    console.log(request.body);
+    let newPage = Page.build({
+        title: request.body.title,
+        content: request.body.content,
+        status: request.body.status,
+    });
+
+    newPage.save().then(function() {
+        response.redirect('/')
+    }).catch(function(err) {
+        console.error(err);
+        response.status(500).render('error', {
+            message: err.errors[0].message,
+            error: {
+                status: 500,
+                stack: err.stack
+            }
+        });
+    });
+});
+
+router.get('/add', function(request, response, next) {
+    response.render('addpage');
 });
 
 

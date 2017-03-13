@@ -19,7 +19,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true })); // for HTML form submits
 app.use(bodyParser.json()); // would be for AJAX requests
 
-app.use('/wiki/',routes);
+app.use('/wiki/', routes);
 
 app.get('/', function (request, response, next) {
     response.render('index');
@@ -35,4 +35,3 @@ db.User.sync().then(function(){})
   .catch(function (err) {
     console.error(err)
   });
-
