@@ -14,19 +14,48 @@ router.get('/', function(request, response, next) {
 });
 
 router.post('/', function(request, response, next) {
-  // let newUser = User.findOrCreate({where: { email: req.body.authorEmail }, defaults: {name: req.body.authorName} })
-    let newPage = Page.build({
+  // User.findOrCreate({
+  //   where: {email: req.body.authorEmail},
+  //   defaults: {name: req.body.authorName}
+  // })
+  //   .then(function (data) {
+  //     console.log(data);
+  //     let newPage = Page.build({
+  //       title: request.body.title,
+  //       content: request.body.content,
+  //       status: request.body.status,
+  //     });
+  //
+  //     return newPage.save()
+  //   })
+  //   .then(function (page) {
+  //     response.redirect(page.getRoute);
+  //   })
+  //   .catch(function (err) {
+  //     redirectToError(err, response);
+  //   });
+
+  User.findOrCreate({
+    where: {email: request.body.authorEmail},
+    defaults: {name: request.body.authorName}
+  })
+    .then(function (user) {
+      return Page.create({
         title: request.body.title,
         content: request.body.content,
         status: request.body.status,
-    });
-
-    newPage.save().then(function(page) {
-        response.redirect(page.getRoute);
-    }).catch(function(err) {
+        authorId: user[0].id
+      })
+    })
+    .then(function (page) {
+      response.redirect(page.getRoute);
+    })
+    .catch(function (err) {
       redirectToError(err, response);
     });
+
 });
+
 
 router.get('/add', function(request, response, next) {
     response.render('addpage');
@@ -39,6 +68,7 @@ router.get('/:urlTitle', function (request, response, next) {
         urlTitle: urlTitle
       }
     }).then(function (foundPage) {
+      console.log('GET', foundPage);
       let locals = {
         title: foundPage.title,
         urlTitle: foundPage.urlTitle,
