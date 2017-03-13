@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const db = require('./models');
 const routes = require('./routes/wiki.js');
+const userRoutes = require('./routes/users.js');
 
 const app = express();
 app.set('view engine', 'html');
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for HTML form submits
 app.use(bodyParser.json()); // would be for AJAX requests
 
 app.use('/wiki/', routes);
+app.use('/users/', userRoutes);
 
 app.get('/', function (request, response, next) {
     response.redirect('/wiki/');

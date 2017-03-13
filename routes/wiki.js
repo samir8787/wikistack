@@ -14,27 +14,6 @@ router.get('/', function(request, response, next) {
 });
 
 router.post('/', function(request, response, next) {
-  // User.findOrCreate({
-  //   where: {email: req.body.authorEmail},
-  //   defaults: {name: req.body.authorName}
-  // })
-  //   .then(function (data) {
-  //     console.log(data);
-  //     let newPage = Page.build({
-  //       title: request.body.title,
-  //       content: request.body.content,
-  //       status: request.body.status,
-  //     });
-  //
-  //     return newPage.save()
-  //   })
-  //   .then(function (page) {
-  //     response.redirect(page.getRoute);
-  //   })
-  //   .catch(function (err) {
-  //     redirectToError(err, response);
-  //   });
-
   User.findOrCreate({
     where: {email: request.body.authorEmail},
     defaults: {name: request.body.authorName}
@@ -63,25 +42,29 @@ router.get('/add', function(request, response, next) {
 
 router.get('/:urlTitle', function (request, response, next) {
     let urlTitle = request.params.urlTitle;
+    var page;
     Page.findOne({
       where: {
         urlTitle: urlTitle
       }
-    }).then(function (foundPage) {
-      console.log('GET', foundPage);
-      let locals = {
-        title: foundPage.title,
-        urlTitle: foundPage.urlTitle,
-        content: foundPage.content,
-        authorName: 'Samir'
-      };
-      response.render('wikipage', locals);
+    }).then(function (p) {
+      page = p;
+      return page.getAuthor();
+    }).then(function(author) {
+      // console.log(data);
+      // var user = author;
+      // let locals = {
+      //   title: page.title,
+      //   urlTitle: page.urlTitle,
+      //   content: page.content,
+      //   authorName: user.name
+      // };
+      response.render('wikipage', { page: page, author: author });
     }).catch(function (err) {
       redirectToError(err, response);
     })
-
-
 });
+//
 
 let redirectToError = function (err, response) {
   console.error(err);
