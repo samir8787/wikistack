@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 
-
-var db = new Sequelize('wikistack', 'wikistack', 'wikistack', {
+// 'wikistack', 'wikistack'
+var db = new Sequelize('wikistack', undefined, undefined, {
     host: 'localhost',
     dialect: 'postgres',
     logging: false
@@ -50,7 +50,10 @@ Page.hook('beforeValidate', function(page, options) {
     page.urlTitle = page.title.replace(/[^\da-z\s]/ig, '').replace(/\s/g, '_').replace(/__+/g, '_');
 });
 
+Page.belongsTo(User, { as: 'author'});
+
 module.exports = {
     Page: Page,
-    User: User
+    User: User,
+    db: db
 };

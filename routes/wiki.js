@@ -6,10 +6,15 @@ const User = models.User;
 const router = express.Router();
 
 router.get('/', function(request, response, next) {
-    response.redirect('/')
+  Page.findAll().then(function(pages) {
+    response.render('index', {pages: pages});
+  }).catch(function(err) {
+    redirectToError(err, response);
+  });
 });
 
 router.post('/', function(request, response, next) {
+  // let newUser = User.findOrCreate({where: { email: req.body.authorEmail }, defaults: {name: req.body.authorName} })
     let newPage = Page.build({
         title: request.body.title,
         content: request.body.content,
@@ -19,7 +24,7 @@ router.post('/', function(request, response, next) {
     newPage.save().then(function(page) {
         response.redirect(page.getRoute);
     }).catch(function(err) {
-      redirectToError(err, response)
+      redirectToError(err, response);
     });
 });
 
@@ -34,16 +39,15 @@ router.get('/:urlTitle', function (request, response, next) {
         urlTitle: urlTitle
       }
     }).then(function (foundPage) {
-      console.log(foundPage);
       let locals = {
         title: foundPage.title,
         urlTitle: foundPage.urlTitle,
         content: foundPage.content,
         authorName: 'Samir'
       };
-      response.render('wikipage', locals)
+      response.render('wikipage', locals);
     }).catch(function (err) {
-      redirectToError(err, response)
+      redirectToError(err, response);
     })
 
 

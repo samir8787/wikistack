@@ -22,11 +22,10 @@ app.use(bodyParser.json()); // would be for AJAX requests
 app.use('/wiki/', routes);
 
 app.get('/', function (request, response, next) {
-    response.render('index');
+    response.redirect('/wiki/');
 });
 
-db.User.sync().then(function(){})
-  .then(db.Page.sync())
+db.db.sync()
   .then(function () {
       app.listen(3000, function() {
       console.log('Server has started!');
